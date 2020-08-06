@@ -1,0 +1,3 @@
+- revised code for PERL Critic
+- revised code for autocreate
+- revised code other sensor typs

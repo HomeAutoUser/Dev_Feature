@@ -1,0 +1,3 @@
+- revised code for PERL Critic
+- revised verbose logoutputs
+- remove any senseless comments
