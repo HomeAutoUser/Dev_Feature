@@ -1,0 +1,500 @@
+1d0
+< 
+4d2
+< 
+13d10
+< 
+16,30c13,26
+< 
+<   $hash->{Match}     = "^(\\S+\\s+9 | OK\\sWS\\s)";
+<   $hash->{SetFn}     = "LaCrosse_Set";
+<   ###$hash->{GetFn}     = "LaCrosse_Get";
+<   $hash->{DefFn}     = "LaCrosse_Define";
+<   $hash->{UndefFn}   = "LaCrosse_Undef";
+<   $hash->{FingerprintFn}   = "LaCrosse_Fingerprint";
+<   $hash->{ParseFn}   = "LaCrosse_Parse";
+<   ###$hash->{AttrFn}    = "LaCrosse_Attr";
+<   $hash->{AttrList}  = "IODev"
+<     ." ignore:1,0"
+<     ." doAverage:1,0"
+<     ." doDewpoint:1,0"
+<     ." filterThreshold"
+<     ." resolution"
+---
+>   $hash->{Match}          = '^(\\S+\\s+9 | OK\\sWS\\s)';
+>   $hash->{SetFn}          = 'LaCrosse_Set';
+>   ###$hash->{GetFn}       = 'LaCrosse_Get';
+>   $hash->{DefFn}          = 'LaCrosse_Define';
+>   $hash->{UndefFn}        = 'LaCrosse_Undef';
+>   $hash->{FingerprintFn}  = 'LaCrosse_Fingerprint';
+>   $hash->{ParseFn}        = 'LaCrosse_Parse';
+>   ###$hash->{AttrFn}      = 'LaCrosse_Attr';
+>   $hash->{AttrList}       = 'IODev'
+>     .' ignore:1,0'
+>     .' doAverage:1,0'
+>     .' doDewpoint:1,0'
+>     .' filterThreshold'
+>     .' resolution'
+33,34c29,33
+<   $hash->{AutoCreate} = { "LaCrosse.*" => { autocreateThreshold => "2:120", FILTER => "%NAME" }};
+< 
+---
+>   $hash->{AutoCreate} = {
+>     'LaCrosse_T_.*'             => { ATTR => 'event-min-interval:.*:175 event-on-change-reading:.*', FILTER => '%NAME', GPLOT => 'temp4:Temp,', autocreateThreshold => '6:120'},          # new scheme only temperature
+>     'LaCrosse_TH_.*'            => { ATTR => 'event-min-interval:.*:175 event-on-change-reading:.*', FILTER => '%NAME', GPLOT => 'temp4hum4:Temp/Hum,', autocreateThreshold => '6:120'},  # new scheme with temperature & humidity
+>     'LaCrosse_([0-9a-f]{2,4})'  => { autocreateThreshold => '6:120', FILTER => '%NAME', GPLOT => '' }, # old scheme
+>   }
+42c41
+<     my $msg = "wrong syntax: define <name> LaCrosse <addr> [corr1...corr2]";
+---
+>     my $msg = 'wrong syntax: define <name> LaCrosse <addr> [corr1...corr2]';
+47c46
+<   $a[2] =~ m/^([\da-f]{2,4})$/i;
+---
+>   $a[2] =~ m/^\w{0,6}([0-9a-f]{2,4})$/i;
+65,66c64
+<   }
+<   else {
+---
+>   } else {
+69,70c67
+< 
+<   return undef;
+---
+>   return;
+73,74d69
+< 
+< #-----------------------------------#
+79d73
+< 
+81,82c75
+< 
+<   return undef;
+---
+>   return;
+86d78
+< #-----------------------------------#
+89d80
+< 
+91,93c82
+< 
+<   my $list = "";
+< 
+---
+>   my $list = '';
+97d85
+< #-----------------------------------#
+100,101c88
+< 
+<   return undef;
+---
+>   return;
+104,105d90
+< 
+< #-----------------------------------#
+108,109c93
+< 
+<   return ( "", $msg );
+---
+>   return ( '', $msg );
+112,113d95
+< 
+< #-----------------------------------#
+116d97
+< 
+122,123c103
+<   }
+<   else {
+---
+>   } else {
+137d116
+< #-----------------------------------#
+144a124
+>   my $list = 'replaceBatteryForSec';
+146,148c126
+<   my $list = "replaceBatteryForSec";
+< 
+<   if( $cmd eq "replaceBatteryForSec" ) {
+---
+>   if( $cmd eq 'replaceBatteryForSec' ) {
+151c129
+<       next if ($defs{$d}->{TYPE} ne "LaCrosse" );
+---
+>       next if ($defs{$d}->{TYPE} ne 'LaCrosse' );
+154c132
+<     return "Usage: set $name replaceBatteryForSec <seconds_active> [ignore_battery]" if(!$arg || $arg !~ m/^\d+$/ || ($arg2 && $arg2 ne "ignore_battery"));
+---
+>     return "Usage: set $name replaceBatteryForSec <seconds_active> [ignore_battery]" if(!$arg || $arg !~ m/^\d+$/ || ($arg2 && $arg2 ne 'ignore_battery'));
+156,159c134,135
+<     InternalTimer(gettimeofday()+$arg, "LaCrosse_RemoveReplaceBattery", $hash, 0);
+< 
+<   }
+<   else {
+---
+>     InternalTimer(gettimeofday()+$arg, 'LaCrosse_RemoveReplaceBattery', $hash, 0);
+>   } else {
+162,163c138
+< 
+<   return undef;
+---
+>   return;
+170d144
+< 
+200c174
+<     # |  | |  |   |   |   --- Humidity incl. WeakBatteryFlag
+---
+>     # |  | |  |   |   |   --- Humidity incl. WeakBatteryFlag (real humidity if value <= 100)
+205,206c179,180
+<     # |  |------------------- fix "9"
+<     # |---------------------- fix "OK"
+---
+>     # |  |------------------- fix '9'
+>     # |---------------------- fix 'OK'
+210c184
+<     return "" if(@bytes != 5);
+---
+>     return '' if(@bytes != 5);
+216c190
+<     $typeName = "T(H)";
+---
+>     $typeName = 'T(H)';
+221,222c195,214
+<   }
+<   elsif ($msg =~ m/^OK WS/) {
+---
+> 
+>     ## check old sensor DEF exists (need check to compatible mode)
+>     if( $modules{LaCrosse}{defptr}{$addr} ) {
+>       Log3 $name, 5, "$name: LaCrosse found exists device. $msg";
+>     } else {
+>       if ($humidity > 100) { # only temperature
+>         $typeName = 'T';
+>         if ($humidity == 106) { # internal temperature sensor      0x6A 01101010
+>           $addr = 'T_int_' . $addr;
+>         } elsif ($humidity == 125) { # external temperature sensor 0x7D 01111101
+>           $addr = 'T_ext_' . $addr;
+>         } else {
+>           $addr = 'T_' . $addr;
+>         }
+>       } else { # temperature/humidity
+>         $typeName = 'TH';
+>         $addr = 'TH_' . $addr;
+>       }
+>     }
+>   } elsif ($msg =~ m/^OK WS/) {
+224,225c216,217
+<     
+<     return "" if(@bytes < 14);
+---
+> 
+>     return '' if(@bytes < 14);
+231,246c223,233
+<       $typeName = "TX22";
+<     }
+<     elsif($typeNumber == 2) {
+<       $typeName = "NodeSensor";
+<     }
+<     elsif($typeNumber == 3) {
+<       $typeName = "WS1080";
+<     }
+<     elsif($typeNumber == 4) {
+<       $typeName = "LaCrosseGateway";
+<     }
+<     elsif($typeNumber == 5) {
+<       $typeName = "UniversalSensor";
+<     }
+<     else {
+<       $typeName = "unknown";
+---
+>       $typeName = 'TX22';
+>     } elsif($typeNumber == 2) {
+>       $typeName = 'NodeSensor';
+>     } elsif($typeNumber == 3) {
+>       $typeName = 'WS1080';
+>     } elsif($typeNumber == 4) {
+>       $typeName = 'LaCrosseGateway';
+>     } elsif($typeNumber == 5) {
+>       $typeName = 'UniversalSensor';
+>     } else {
+>       $typeName = 'unknown';
+259c246
+<       $rh->{"bufferedT"} = $temperature;
+---
+>       $rh->{'bufferedT'} = $temperature;
+262,263c249,250
+<       if(defined($rh->{"bufferedT"})) {
+<         $temperature = $rh->{"bufferedT"};
+---
+>       if(defined($rh->{'bufferedT'})) {
+>         $temperature = $rh->{'bufferedT'};
+270c257
+<         $rh->{"bufferedH"} = $humidity;
+---
+>         $rh->{'bufferedH'} = $humidity;
+274,275c261,262
+<       if(defined($rh->{"bufferedH"})) {
+<         $humidity = $rh->{"bufferedH"};
+---
+>       if(defined($rh->{'bufferedH'})) {
+>         $humidity = $rh->{'bufferedH'};
+292c279
+<     
+---
+> 
+297c284
+<   
+---
+> 
+301c288
+<    
+---
+> 
+305c292
+<   
+---
+> 
+309c296
+<   
+---
+> 
+314c301
+<   
+---
+> 
+318c305
+<   
+---
+> 
+323,325c310,311
+<   
+<   }
+<   else {
+---
+> 
+>   } else {
+327,328c313,314
+<     Log3 $name, 3, "$name: Unknown code $msg, help me!";
+<     return "";
+---
+>     Log3 $name, 3, "$name: LaCrosse Unknown code $msg, help me!";
+>     return '';
+335c321
+<   return "" if( IsIgnored($rname) );
+---
+>   return '' if( IsIgnored($rname) );
+341c327
+<       next if( $defs{$d}->{TYPE} ne "LaCrosse" );
+---
+>       next if( $defs{$d}->{TYPE} ne 'LaCrosse' );
+356c342
+<         CommandSave(undef,undef) if( AttrVal( "autocreate", "autosave", 1 ) );
+---
+>         CommandSave(undef,undef) if( AttrVal( 'autocreate', 'autosave', 1 ) );
+358c344,346
+<         return "";
+---
+>         return '';
+>       } else {
+>         Log3 $name, 1 , "LaCrosse: device $rname else";
+366c354
+<       next if($defs{$d}{TYPE} ne "autocreate");
+---
+>       next if($defs{$d}{TYPE} ne 'autocreate');
+368c356
+<       $autoCreateState = 2 if(!AttrVal($defs{$d}{NAME}, "disable", undef));
+---
+>       $autoCreateState = 2 if(!AttrVal($defs{$d}{NAME}, 'disable', undef));
+370,371c358,359
+<       my $it = AttrVal($defs{$d}{NAME}, "ignoreTypes", "");
+<       if("LaCrosse" =~ m/$it/i) {
+---
+>       my $it = AttrVal($defs{$d}{NAME}, 'ignoreTypes', '');
+>       if('LaCrosse' =~ m/$it/i) {
+394c382
+<     Log3 $name, $loglevel, "LaCrosse: check commandref on usage of LaCrossePairForSec" if( !$hash->{LaCrossePair} && !defined($modules{LaCrosse}{defptr}) );
+---
+>     Log3 $name, $loglevel, 'LaCrosse: check commandref on usage of LaCrossePairForSec' if( !$hash->{LaCrossePair} && !defined($modules{LaCrosse}{defptr}) );
+396c384
+<     return "" if( !$hash->{LaCrossePair} );
+---
+>     return '' if( !$hash->{LaCrossePair} );
+399c387
+<     return "";
+---
+>     return '';
+408c396
+<   $rhash->{"sensorType"} = "$typeNumber=$typeName";
+---
+>   $rhash->{'sensorType'} = "$typeNumber=$typeName";
+411c399
+<     $channel = "" if( $channel == 1 );
+---
+>     $channel = '' if( $channel == 1 );
+423,425c411,413
+<       && abs($rhash->{"previousH$channel"} - $humidity) <= AttrVal( $rname, "filterThreshold", 10 )
+<       && abs($rhash->{"previousT$channel"} - $temperature) <= AttrVal( $rname, "filterThreshold", 10 ) )) {
+<       
+---
+>       && abs($rhash->{"previousH$channel"} - $humidity) <= AttrVal( $rname, 'filterThreshold', 10 )
+>       && abs($rhash->{"previousT$channel"} - $temperature) <= AttrVal( $rname, 'filterThreshold', 10 ) )) {
+> 
+432c420
+<       if (AttrVal( $rname, "doAverage", 0 ) && defined($rhash->{"previousT$channel"}) && $temperature != 0xFFFF) {
+---
+>       if (AttrVal( $rname, 'doAverage', 0 ) && defined($rhash->{"previousT$channel"}) && $temperature != 0xFFFF) {
+435c423
+<       if (AttrVal( $rname, "doAverage", 0 ) && defined($rhash->{"previousH$channel"}) && $humidity != 0xFF) {
+---
+>       if (AttrVal( $rname, 'doAverage', 0 ) && defined($rhash->{"previousH$channel"}) && $humidity != 0xFF) {
+438c426
+<       
+---
+> 
+441c429
+<       if( AttrVal( $rname, "doDewpoint", 0 ) && $humidity && $humidity <= 99 && $temperature != 0xFFFF ) {
+---
+>       if( AttrVal( $rname, 'doDewpoint', 0 ) && $humidity && $humidity <= 99 && $temperature != 0xFFFF ) {
+446c434
+<       my $resolution = AttrVal( $rname, "resolution", 1);
+---
+>       my $resolution = AttrVal( $rname, 'resolution', 1);
+460c448
+<         readingsBulkUpdate($rhash, "error", $error ? "1" : "0");
+---
+>         readingsBulkUpdate($rhash, 'error', $error ? '1' : '0');
+462,463c450,451
+<       
+<       readingsBulkUpdate($rhash, "battery", $battery_low ? "low" : "ok");
+---
+> 
+>       readingsBulkUpdate($rhash, 'battery', $battery_low ? 'low' : 'ok');
+478,479c466,467
+<         my $state = "T: ". $temperature;
+<         $state .= " H: ". ($humidity) if( $humidity && $humidity <= 99 );
+---
+>         my $state = 'T: '. $temperature;
+>         $state .= ' H: '. ($humidity) if( $humidity && $humidity <= 99 );
+482c470
+<         readingsBulkUpdate($rhash, "state", $state) if( Value($rname) ne $state );
+---
+>         readingsBulkUpdate($rhash, 'state', $state) if( Value($rname) ne $state );
+488,489c476,477
+<       $rhash->{"bufferedT"} = undef;
+<       $rhash->{"bufferedH"} = undef;
+---
+>       $rhash->{'bufferedT'} = undef;
+>       $rhash->{'bufferedH'} = undef;
+498c486
+<       readingsBulkUpdate($rhash, "windSpeed", $windSpeed );
+---
+>       readingsBulkUpdate($rhash, 'windSpeed', $windSpeed );
+502c490
+<       readingsBulkUpdate($rhash, "windGust", $windGust );
+---
+>       readingsBulkUpdate($rhash, 'windGust', $windGust );
+506,507c494,495
+<       if(!defined($rhash->{"previousR"}) || (defined($rhash->{"previousR"}) && abs($rhash->{"previousR"} - $rain) <= AttrVal( $rname, "filterThreshold", 10 ))){
+<         readingsBulkUpdate($rhash, "rain", $rain );
+---
+>       if(!defined($rhash->{'previousR'}) || (defined($rhash->{'previousR'}) && abs($rhash->{'previousR'} - $rain) <= AttrVal( $rname, 'filterThreshold', 10 ))){
+>         readingsBulkUpdate($rhash, 'rain', $rain );
+509c497
+<       $rhash->{"previousR"} = $rain;
+---
+>       $rhash->{'previousR'} = $rain;
+513c501
+<       readingsBulkUpdate($rhash, "windDirectionDegree", $windDirection );
+---
+>       readingsBulkUpdate($rhash, 'windDirectionDegree', $windDirection );
+515,531c503,519
+<       my $windDirectionText = "---";
+<       if    ($windDirection >=    0 && $windDirection <=  11.2) { $windDirectionText = "N"; }
+<       elsif ($windDirection >  11.2 && $windDirection <=  33.7) { $windDirectionText = "NNE"; }
+<       elsif ($windDirection >  33.7 && $windDirection <=  56.2) { $windDirectionText = "NE"; }
+<       elsif ($windDirection >  56.2 && $windDirection <=  78.7) { $windDirectionText = "ENE"; }
+<       elsif ($windDirection >  78.7 && $windDirection <= 101.2) { $windDirectionText = "E"; }
+<       elsif ($windDirection > 101.2 && $windDirection <= 123.7) { $windDirectionText = "ESE"; }
+<       elsif ($windDirection > 123.7 && $windDirection <= 146.2) { $windDirectionText = "SE"; }
+<       elsif ($windDirection > 146.2 && $windDirection <= 168.7) { $windDirectionText = "SSE"; }
+<       elsif ($windDirection > 168.7 && $windDirection <= 191.2) { $windDirectionText = "S"; }
+<       elsif ($windDirection > 191.2 && $windDirection <= 213.7) { $windDirectionText = "SSW"; }
+<       elsif ($windDirection > 213.7 && $windDirection <= 236.2) { $windDirectionText = "SW"; }
+<       elsif ($windDirection > 236.2 && $windDirection <= 258.7) { $windDirectionText = "WSW"; }
+<       elsif ($windDirection > 258.7 && $windDirection <= 281.2) { $windDirectionText = "W"; }
+<       elsif ($windDirection > 281.2 && $windDirection <= 303.7) { $windDirectionText = "WNW"; }
+<       elsif ($windDirection > 303.7 && $windDirection <= 326.2) { $windDirectionText = "NW"; }
+<       elsif ($windDirection > 326.2 && $windDirection <= 348.7) { $windDirectionText = "NNW"; };
+---
+>       my $windDirectionText = '---';
+>       if    ($windDirection >=    0 && $windDirection <=  11.2) { $windDirectionText = 'N'; }
+>       elsif ($windDirection >  11.2 && $windDirection <=  33.7) { $windDirectionText = 'NNE'; }
+>       elsif ($windDirection >  33.7 && $windDirection <=  56.2) { $windDirectionText = 'NE'; }
+>       elsif ($windDirection >  56.2 && $windDirection <=  78.7) { $windDirectionText = 'ENE'; }
+>       elsif ($windDirection >  78.7 && $windDirection <= 101.2) { $windDirectionText = 'E'; }
+>       elsif ($windDirection > 101.2 && $windDirection <= 123.7) { $windDirectionText = 'ESE'; }
+>       elsif ($windDirection > 123.7 && $windDirection <= 146.2) { $windDirectionText = 'SE'; }
+>       elsif ($windDirection > 146.2 && $windDirection <= 168.7) { $windDirectionText = 'SSE'; }
+>       elsif ($windDirection > 168.7 && $windDirection <= 191.2) { $windDirectionText = 'S'; }
+>       elsif ($windDirection > 191.2 && $windDirection <= 213.7) { $windDirectionText = 'SSW'; }
+>       elsif ($windDirection > 213.7 && $windDirection <= 236.2) { $windDirectionText = 'SW'; }
+>       elsif ($windDirection > 236.2 && $windDirection <= 258.7) { $windDirectionText = 'WSW'; }
+>       elsif ($windDirection > 258.7 && $windDirection <= 281.2) { $windDirectionText = 'W'; }
+>       elsif ($windDirection > 281.2 && $windDirection <= 303.7) { $windDirectionText = 'WNW'; }
+>       elsif ($windDirection > 303.7 && $windDirection <= 326.2) { $windDirectionText = 'NW'; }
+>       elsif ($windDirection > 326.2 && $windDirection <= 348.7) { $windDirectionText = 'NNW'; };
+533c521
+<       readingsBulkUpdate($rhash, "windDirectionText", $windDirectionText );
+---
+>       readingsBulkUpdate($rhash, 'windDirectionText', $windDirectionText );
+537c525
+<       readingsBulkUpdate($rhash, "pressure", $pressure );
+---
+>       readingsBulkUpdate($rhash, 'pressure', $pressure );
+539c527
+<   
+---
+> 
+541c529
+<       readingsBulkUpdate($rhash, "gas1", $gas1 );
+---
+>       readingsBulkUpdate($rhash, 'gas1', $gas1 );
+543c531
+<   
+---
+> 
+545c533
+<       readingsBulkUpdate($rhash, "gas2", $gas2 );
+---
+>       readingsBulkUpdate($rhash, 'gas2', $gas2 );
+547c535
+<   
+---
+> 
+549c537
+<       readingsBulkUpdate($rhash, "lux", $lux );
+---
+>       readingsBulkUpdate($rhash, 'lux', $lux );
+551c539
+<   
+---
+> 
+553c541
+<       readingsBulkUpdate($rhash, "version", $version );
+---
+>       readingsBulkUpdate($rhash, 'version', $version );
+555c543
+<   
+---
+> 
+557c545
+<       readingsBulkUpdate($rhash, "voltage", $voltage );
+---
+>       readingsBulkUpdate($rhash, 'voltage', $voltage );
+559c547
+<     
+---
+> 
+561c549
+<       readingsBulkUpdate($rhash, "debug", $debug );
+---
+>       readingsBulkUpdate($rhash, 'debug', $debug );
