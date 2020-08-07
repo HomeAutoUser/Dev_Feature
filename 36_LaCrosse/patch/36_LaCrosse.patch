@@ -362,51 +362,52 @@
 <         readingsBulkUpdate($rhash, "error", $error ? "1" : "0");
 ---
 >         readingsBulkUpdate($rhash, 'error', $error ? '1' : '0');
-462,463c450,451
+462,463c450,452
 <       
 <       readingsBulkUpdate($rhash, "battery", $battery_low ? "low" : "ok");
 ---
 > 
 >       readingsBulkUpdate($rhash, 'battery', $battery_low ? 'low' : 'ok');
-478,479c466,467
+>       readingsBulkUpdate($rhash, 'batteryState', $battery_low ? 'low' : 'ok');  #https://forum.fhem.de/index.php/topic,87575.msg803124.html#msg803124
+478,479c467,468
 <         my $state = "T: ". $temperature;
 <         $state .= " H: ". ($humidity) if( $humidity && $humidity <= 99 );
 ---
 >         my $state = 'T: '. $temperature;
 >         $state .= ' H: '. ($humidity) if( $humidity && $humidity <= 99 );
-482c470
+482c471
 <         readingsBulkUpdate($rhash, "state", $state) if( Value($rname) ne $state );
 ---
 >         readingsBulkUpdate($rhash, 'state', $state) if( Value($rname) ne $state );
-488,489c476,477
+488,489c477,478
 <       $rhash->{"bufferedT"} = undef;
 <       $rhash->{"bufferedH"} = undef;
 ---
 >       $rhash->{'bufferedT'} = undef;
 >       $rhash->{'bufferedH'} = undef;
-498c486
+498c487
 <       readingsBulkUpdate($rhash, "windSpeed", $windSpeed );
 ---
 >       readingsBulkUpdate($rhash, 'windSpeed', $windSpeed );
-502c490
+502c491
 <       readingsBulkUpdate($rhash, "windGust", $windGust );
 ---
 >       readingsBulkUpdate($rhash, 'windGust', $windGust );
-506,507c494,495
+506,507c495,496
 <       if(!defined($rhash->{"previousR"}) || (defined($rhash->{"previousR"}) && abs($rhash->{"previousR"} - $rain) <= AttrVal( $rname, "filterThreshold", 10 ))){
 <         readingsBulkUpdate($rhash, "rain", $rain );
 ---
 >       if(!defined($rhash->{'previousR'}) || (defined($rhash->{'previousR'}) && abs($rhash->{'previousR'} - $rain) <= AttrVal( $rname, 'filterThreshold', 10 ))){
 >         readingsBulkUpdate($rhash, 'rain', $rain );
-509c497
+509c498
 <       $rhash->{"previousR"} = $rain;
 ---
 >       $rhash->{'previousR'} = $rain;
-513c501
+513c502
 <       readingsBulkUpdate($rhash, "windDirectionDegree", $windDirection );
 ---
 >       readingsBulkUpdate($rhash, 'windDirectionDegree', $windDirection );
-515,531c503,519
+515,531c504,520
 <       my $windDirectionText = "---";
 <       if    ($windDirection >=    0 && $windDirection <=  11.2) { $windDirectionText = "N"; }
 <       elsif ($windDirection >  11.2 && $windDirection <=  33.7) { $windDirectionText = "NNE"; }
@@ -442,59 +443,59 @@
 >       elsif ($windDirection > 281.2 && $windDirection <= 303.7) { $windDirectionText = 'WNW'; }
 >       elsif ($windDirection > 303.7 && $windDirection <= 326.2) { $windDirectionText = 'NW'; }
 >       elsif ($windDirection > 326.2 && $windDirection <= 348.7) { $windDirectionText = 'NNW'; };
-533c521
+533c522
 <       readingsBulkUpdate($rhash, "windDirectionText", $windDirectionText );
 ---
 >       readingsBulkUpdate($rhash, 'windDirectionText', $windDirectionText );
-537c525
+537c526
 <       readingsBulkUpdate($rhash, "pressure", $pressure );
 ---
 >       readingsBulkUpdate($rhash, 'pressure', $pressure );
-539c527
+539c528
 <   
 ---
 > 
-541c529
+541c530
 <       readingsBulkUpdate($rhash, "gas1", $gas1 );
 ---
 >       readingsBulkUpdate($rhash, 'gas1', $gas1 );
-543c531
+543c532
 <   
 ---
 > 
-545c533
+545c534
 <       readingsBulkUpdate($rhash, "gas2", $gas2 );
 ---
 >       readingsBulkUpdate($rhash, 'gas2', $gas2 );
-547c535
+547c536
 <   
 ---
 > 
-549c537
+549c538
 <       readingsBulkUpdate($rhash, "lux", $lux );
 ---
 >       readingsBulkUpdate($rhash, 'lux', $lux );
-551c539
+551c540
 <   
 ---
 > 
-553c541
+553c542
 <       readingsBulkUpdate($rhash, "version", $version );
 ---
 >       readingsBulkUpdate($rhash, 'version', $version );
-555c543
+555c544
 <   
 ---
 > 
-557c545
+557c546
 <       readingsBulkUpdate($rhash, "voltage", $voltage );
 ---
 >       readingsBulkUpdate($rhash, 'voltage', $voltage );
-559c547
+559c548
 <     
 ---
 > 
-561c549
+561c550
 <       readingsBulkUpdate($rhash, "debug", $debug );
 ---
 >       readingsBulkUpdate($rhash, 'debug', $debug );

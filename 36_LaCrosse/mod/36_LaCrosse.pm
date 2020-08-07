@@ -449,6 +449,7 @@ sub LaCrosse_Parse($$) {
       }
 
       readingsBulkUpdate($rhash, 'battery', $battery_low ? 'low' : 'ok');
+      readingsBulkUpdate($rhash, 'batteryState', $battery_low ? 'low' : 'ok');  #https://forum.fhem.de/index.php/topic,87575.msg803124.html#msg803124
 
       # write temperature, humidity, ...
       if ($temperature != 0xFFFF) {

@@ -1,3 +1,7 @@
-- revised code for PERL Critic
+- revised code for PERL Critic (http://perlcritic.com/)
+  * Useless interpolation of literal string ...
+  * Quotes used with a string containing no non-whitespace characters ...
 - revised code for autocreate
 - revised code other sensor typs
+  * sensors with same ID but different types can use
+- adaptation reading batteryState (https://forum.fhem.de/index.php/topic,110964.msg1052324.html#msg1052324)
