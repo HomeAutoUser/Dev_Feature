@@ -1,0 +1,30 @@
+- minimale Codeänderung !
+#########################
+
+- KOPP_FC_Define
+
+* Return Variable Direktausgabe
+* Return Ausgabe angepasst für bessere Klarheit
+* Prüfung auf Anzahl Argumente beim Define ergänzt
+* Prüfung keycode2 & keycode3 ergänzt
+
+* Logausgabe:
+  --> Anpassung weil $modules{KOPP_FC}{defptr}{$code}{$name} ein HASH(0x497e488) ist
+  --> Bezeichnungen doppel $a[0], entspricht auch Name
+  --> Reihenfolge angepasst wie Reihenfolge im RAWcode (Schema siehe unten)
+
+    define DimmerDevice_OnOff KOPP_FC 65 FA5E 02 55 75
+          |||||||||||||||||| ||||||| || |||| || || ++- Keycode 3 (Taster 3, optional)
+          |||||||||||||||||| ||||||| || |||| || ++---- Keycode 2 (Taster 2, optional)
+          |||||||||||||||||| ||||||| || |||| ++------- Transmittercode 2 (fix)
+          |||||||||||||||||| ||||||| || ++++---------- Transmittercode 1 (fix)
+          |||||||||||||||||| ||||||| ++--------------- Keycode 1 (Taster 1)
+          |||||||||||||||||| +++++++------------------ Zu nutzendes Funkprotokoll=KOPP_FC 
+          ++++++++++++++++++-------------------------- Name des neu definierten Devices (frei wählbar)
+
+- KOPP_FC_Undef
+* Debugausgaben eingebunden und vereinfacht, waren auskommentiert (nur zum testen waren)
+* Debugausgaben erscheinen nur bei verbose 5 im Modul
+
+- KOPP_FC_Attr
+* überflüssiges Return entfernt
