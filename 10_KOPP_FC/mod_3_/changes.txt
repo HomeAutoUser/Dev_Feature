@@ -1,0 +1,7 @@
+- keine Codeänderung!
+#####################
+
+- Entfernung "Leerkommentare mit #"
+- Entfernung "Sinnloskommentaren" und Optimierung Kommentare
+- Optimierung Einrückungen
+  --> Voraussetzung für besseren Druchblick / Überblick im Modul / Schaffung Ordnung
